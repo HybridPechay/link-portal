@@ -38,7 +38,7 @@ $tree = build_visible_tree($user['id'], $user['is_admin']);
 
 <main class="page">
     <div class="page-head">
-        <h1>Your links</h1>
+        <h1>Accreditation 2026</h1>
         <input type="search" id="tree-search" class="search-input" placeholder="Search links and folders&hellip;" aria-label="Search links and folders">
     </div>
 
