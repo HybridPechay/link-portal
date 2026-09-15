@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: link_portal
+      DB_USER: link_portal_user
+      DB_PASS: ${DB_PASS:-change_me_too}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Comment this out for a production image build (bake code into the
+      # image instead of mounting it) — handy for local editing though.
+      - ./:/var/www/html
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: link_portal
+      MYSQL_USER: link_portal_user
+      MYSQL_PASSWORD: ${DB_PASS:-change_me_too}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS:-change_me_root}
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASS:-change_me_root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  db_data:
