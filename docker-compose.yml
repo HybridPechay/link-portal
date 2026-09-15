@@ -2,7 +2,7 @@ services:
   app:
     build: .
     ports:
-      - "8080:80"
+      - "8000:80"
     environment:
       DB_HOST: db
       DB_NAME: link_portal
@@ -11,10 +11,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    volumes:
-      # Comment this out for a production image build (bake code into the
-      # image instead of mounting it) — handy for local editing though.
-      - ./:/var/www/html
 
   db:
     image: mysql:8.0
