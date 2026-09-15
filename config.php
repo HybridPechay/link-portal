@@ -18,7 +18,7 @@ define('DB_USER', getenv('DB_USER') ?: 'link_portal_user');
 define('DB_PASS', getenv('DB_PASS') ?: 'CHANGE_ME');
 
 // ---- App ----------------------------------------------------------------
-define('APP_NAME', 'Link Portal');
+define('APP_NAME', 'Accreditation Portal');
 define('SESSION_NAME', 'lp_session');
 define('MAX_LOGIN_ATTEMPTS', 5);      // failed attempts allowed
 define('LOGIN_LOCKOUT_MINUTES', 15);  // lockout window after max attempts
