@@ -187,6 +187,11 @@ form { margin: 0; }
     border-radius: 4px;
 }
 
+/* Logo image (replaces the placeholder .brand-mark when assets/img/logo.png exists) */
+.brand-logo { display: block; height: 32px; width: auto; max-width: 180px; object-fit: contain; }
+.brand-logo-lg { height: 72px; max-width: 240px; margin: 0 auto; }
+.auth-logo { margin: 0 auto 1em; text-align: center; }
+
 /* ---------- Top bar ---------- */
 
 .topbar {

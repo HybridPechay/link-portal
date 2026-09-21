@@ -22,11 +22,11 @@ $linkCount = (int) $pdo->query('SELECT COUNT(*) FROM links')->fetchColumn();
 <title>Admin &mdash; <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body>
+<body data-keepalive="1">
 <header class="topbar">
     <div class="topbar-inner">
         <div class="brand">
-            <span class="brand-mark" aria-hidden="true"></span>
+            <?= brand_logo() ?>
             <span class="brand-name"><?= e(APP_NAME) ?> <span class="badge">Admin</span></span>
         </div>
         <div class="topbar-right">
@@ -59,5 +59,6 @@ $linkCount = (int) $pdo->query('SELECT COUNT(*) FROM links')->fetchColumn();
         </a>
     </div>
 </main>
+<script src="/assets/js/app.js"></script>
 </body>
 </html>

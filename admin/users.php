@@ -95,10 +95,10 @@ $users = $pdo->query('SELECT id, username, is_admin, is_active, created_at FROM 
 <title>Users &mdash; <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body>
+<body data-keepalive="1">
 <header class="topbar">
     <div class="topbar-inner">
-        <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span class="brand-name"><?= e(APP_NAME) ?> <span class="badge">Admin</span></span></div>
+        <div class="brand"><?= brand_logo() ?><span class="brand-name"><?= e(APP_NAME) ?> <span class="badge">Admin</span></span></div>
         <div class="topbar-right">
             <a class="btn btn-ghost" href="/index.php">View portal</a>
             <a class="btn btn-ghost" href="/logout.php">Sign out</a>

@@ -1,0 +1,4 @@
+# Helper code only - nothing here should ever be requested directly.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>

@@ -1,0 +1,41 @@
+# Secrets / environment (never commit real passwords)
+.env
+.env.*
+!.env.example
+
+# Runtime data
+sessions/
+*.log
+error_log
+php_errors.log
+
+# Database dumps and backups (schema.sql is intentionally tracked)
+*.bak
+*.old
+*.orig
+*.sql.gz
+*.dump
+backup*/
+
+# Dependencies (if you ever add any)
+vendor/
+node_modules/
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Generated archives / patches
+*.zip
+*.tar
+*.tar.gz
+*.patch
+
+# Docker overrides (local-only)
+docker-compose.override.yml

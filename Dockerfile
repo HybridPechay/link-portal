@@ -14,7 +14,20 @@ RUN { \
         echo 'post_max_size = 2M'; \
     } > /usr/local/etc/php/conf.d/hardening.ini
 
+# Private, persistent session folder (mounted as a volume in docker-compose.yml)
+# so rebuilding/restarting the container doesn't log everyone out.
+RUN mkdir -p /var/lib/lp_sessions && chown www-data:www-data /var/lib/lp_sessions && chmod 700 /var/lib/lp_sessions
+
 RUN a2enmod headers rewrite
+
+# The php:apache image ignores .htaccess by default (AllowOverride None).
+# Turn it on so the project's .htaccess rules actually apply.
+RUN { \
+        echo '<Directory /var/www/html>'; \
+        echo '    AllowOverride All'; \
+        echo '</Directory>'; \
+    } > /etc/apache2/conf-available/allow-htaccess.conf \
+    && a2enconf allow-htaccess
 
 COPY . /var/www/html/
 

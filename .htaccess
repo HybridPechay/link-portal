@@ -1,0 +1,37 @@
+# Link Portal - Apache hardening (requires AllowOverride to be enabled;
+# the provided Dockerfile already does this).
+
+# Never list folder contents
+Options -Indexes
+
+# Block hidden files and folders (.git, .env, .gitkeep, ...), except the
+# ".well-known" folder used for things like SSL certificate validation.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+</IfModule>
+
+# Block direct download of non-runtime files (database dumps, env files,
+# docs, Docker/config files, patches, backups, logs).
+<FilesMatch "(?i)\.(sql|env|md|patch|zip|tar|gz|bak|old|orig|swp|log|ini|yml|yaml|lock|dist|sh)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+<FilesMatch "^(Dockerfile|\.env.*|config\.php)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+# Extra safety headers (also sent by PHP; this covers static files too)
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+</IfModule>
+
+# Don't let visitors run PHP from asset folders (e.g. an uploaded logo)
+<IfModule mod_rewrite.c>
+    RewriteRule ^assets/.*\.php$ - [F,L,NC]
+</IfModule>

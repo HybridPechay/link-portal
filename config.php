@@ -24,6 +24,16 @@ define('MAX_LOGIN_ATTEMPTS', 5);      // failed attempts allowed
 define('LOGIN_LOCKOUT_MINUTES', 15);  // lockout window after max attempts
 define('BRAND_COLOR', '#125D32');
 
+// Sign people out after this many minutes with NO activity. "Activity" now
+// includes clicking/scrolling/typing on the page (a background heartbeat
+// tells the server), not just full page loads.
+define('IDLE_TIMEOUT_MINUTES', 120);
+
+// Logo shown on the sign-in page and top bar. Drop your file here (PNG, SVG,
+// WebP or JPG all work). If the file is missing, the old green placeholder
+// mark is shown instead.
+define('LOGO_PATH', '/assets/img/logo.png');
+
 // ---- Error handling -------------------------------------------------
 // Never display raw errors to visitors in production.
 ini_set('display_errors', '0');
@@ -35,6 +45,17 @@ error_reporting(E_ALL);
 $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
     || (($_SERVER['SERVER_PORT'] ?? '') == 443)
     || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+
+// Session storage. PHP's garbage collector deletes session files that haven't
+// been touched for session.gc_maxlifetime seconds (default 1440 = 24 min),
+// which silently logged people out BEFORE our own idle timeout could apply.
+// Keep it comfortably above the idle timeout, and (optionally) use a
+// private folder so other PHP apps on the same server can't purge our sessions.
+$sessionSavePath = getenv('SESSION_SAVE_PATH');
+if ($sessionSavePath && is_dir($sessionSavePath) && is_writable($sessionSavePath)) {
+    session_save_path($sessionSavePath);
+}
+ini_set('session.gc_maxlifetime', (string) (IDLE_TIMEOUT_MINUTES * 60 + 3600));
 
 session_name(SESSION_NAME);
 ini_set('session.use_strict_mode', '1');

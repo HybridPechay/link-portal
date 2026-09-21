@@ -78,3 +78,45 @@ document.addEventListener('submit', function (e) {
         }
     }
 });
+
+// ---- Keep-alive: real activity (clicks, typing, scrolling, searching) keeps
+// the session open, even though it doesn't trigger a full page load. ----
+(function () {
+    if (!document.body || !document.body.hasAttribute('data-keepalive')) return;
+
+    const PING_EVERY_MS = 4 * 60 * 1000;   // at most one ping per 4 minutes
+    let lastActivity = Date.now();
+    let lastPing = Date.now();
+    let pinging = false;
+
+    const markActive = () => { lastActivity = Date.now(); };
+    ['click', 'keydown', 'scroll', 'touchstart', 'mousemove', 'input'].forEach((evt) =>
+        document.addEventListener(evt, markActive, { passive: true, capture: true })
+    );
+
+    function ping() {
+        if (pinging) return;
+        pinging = true;
+        lastPing = Date.now();
+        fetch('/keepalive.php', { method: 'POST', credentials: 'same-origin', cache: 'no-store' })
+            .then((res) => {
+                if (res.status === 401) window.location.href = '/login.php?timeout=1';
+            })
+            .catch(() => { /* offline / server blip: try again next tick */ })
+            .finally(() => { pinging = false; });
+    }
+
+    setInterval(function () {
+        // Only ping if the person actually did something since the last ping.
+        if (lastActivity > lastPing) ping();
+    }, 60 * 1000);
+
+    // Coming back to the tab (e.g. after working in a link opened in another
+    // tab) counts as activity and validates the session straight away.
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            markActive();
+            if (Date.now() - lastPing > 30 * 1000) ping();
+        }
+    });
+})();

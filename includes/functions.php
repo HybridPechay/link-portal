@@ -261,3 +261,19 @@ function folder_is_within(int $folderId, int $ancestorId, array $parentOf): bool
     }
     return false;
 }
+
+/**
+ * Brand logo. Uses the image at LOGO_PATH if it exists, otherwise falls back
+ * to the original green placeholder mark. $large = bigger version for the
+ * sign-in page.
+ */
+function brand_logo(bool $large = false): string
+{
+    $file = __DIR__ . '/..' . LOGO_PATH;
+    $class = $large ? 'brand-logo brand-logo-lg' : 'brand-logo';
+    if (is_file($file)) {
+        $v = filemtime($file); // cache-bust when you replace the file
+        return '<img class="' . $class . '" src="' . e(LOGO_PATH) . '?v=' . $v . '" alt="' . e(APP_NAME) . ' logo">';
+    }
+    return '<span class="brand-mark" aria-hidden="true"></span>';
+}

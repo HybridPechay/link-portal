@@ -32,7 +32,7 @@ $timedOut = isset($_GET['timeout']);
 </head>
 <body class="auth-page">
 <main class="auth-card">
-    <div class="brand-mark" aria-hidden="true"></div>
+    <div class="auth-logo"><?= brand_logo(true) ?></div>
     <h1><?= e(APP_NAME) ?></h1>
     <p class="muted">Sign in to see your links</p>
 

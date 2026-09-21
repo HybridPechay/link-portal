@@ -19,11 +19,11 @@ $tree = build_visible_tree($user['id'], $user['is_admin']);
 <title><?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="/assets/css/style.css">
 </head>
-<body>
+<body data-keepalive="1">
 <header class="topbar">
     <div class="topbar-inner">
         <div class="brand">
-            <span class="brand-mark" aria-hidden="true"></span>
+            <?= brand_logo() ?>
             <span class="brand-name"><?= e(APP_NAME) ?></span>
         </div>
         <div class="topbar-right">

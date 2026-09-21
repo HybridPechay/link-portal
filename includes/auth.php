@@ -109,16 +109,33 @@ function logout_user(): void
     session_destroy();
 }
 
-/** Idle timeout: log people out after 30 minutes of inactivity. */
-function enforce_idle_timeout(int $maxIdleSeconds = 1800): void
+/**
+ * Returns true if the current session is still within the idle window
+ * (and refreshes the activity timestamp). Returns false, after logging the
+ * user out, if they've been idle too long.
+ */
+function session_touch_or_expire(): bool
+{
+    if (!current_user()) {
+        return false;
+    }
+    $maxIdle = IDLE_TIMEOUT_MINUTES * 60;
+    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $maxIdle) {
+        logout_user();
+        return false;
+    }
+    $_SESSION['last_activity'] = time();
+    return true;
+}
+
+/** Idle timeout for normal page loads: redirect to login when expired. */
+function enforce_idle_timeout(): void
 {
     if (!current_user()) {
         return;
     }
-    if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity']) > $maxIdleSeconds) {
-        logout_user();
+    if (!session_touch_or_expire()) {
         header('Location: /login.php?timeout=1');
         exit;
     }
-    $_SESSION['last_activity'] = time();
 }

@@ -8,6 +8,9 @@ services:
       DB_NAME: link_portal
       DB_USER: link_portal_user
       DB_PASS: ${DB_PASS:-change_me_too}
+      SESSION_SAVE_PATH: /var/lib/lp_sessions
+    volumes:
+      - session_data:/var/lib/lp_sessions
     depends_on:
       db:
         condition: service_healthy
@@ -31,3 +34,4 @@ services:
 
 volumes:
   db_data:
+  session_data:
