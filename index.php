@@ -18,6 +18,7 @@ $tree = build_visible_tree($user['id'], $user['is_admin']);
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="/assets/css/style.css">
+<?= favicon_tags() ?>
 </head>
 <body data-keepalive="1">
 <header class="topbar">

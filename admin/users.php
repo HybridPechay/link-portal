@@ -94,6 +94,7 @@ $users = $pdo->query('SELECT id, username, is_admin, is_active, created_at FROM 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Users &mdash; <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="/assets/css/style.css">
+<?= favicon_tags() ?>
 </head>
 <body data-keepalive="1">
 <header class="topbar">

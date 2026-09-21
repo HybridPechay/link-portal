@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Setup &mdash; <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="/assets/css/style.css">
+<?= favicon_tags() ?>
 </head>
 <body class="auth-page">
 <main class="auth-card">

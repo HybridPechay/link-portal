@@ -122,6 +122,7 @@ function render_permission_tree(array $nodes): string
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Permissions &mdash; <?= e(APP_NAME) ?></title>
 <link rel="stylesheet" href="/assets/css/style.css">
+<?= favicon_tags() ?>
 </head>
 <body data-keepalive="1">
 <header class="topbar">

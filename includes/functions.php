@@ -277,3 +277,20 @@ function brand_logo(bool $large = false): string
     }
     return '<span class="brand-mark" aria-hidden="true"></span>';
 }
+
+/**
+ * <link> tags for the browser-tab icon (favicon), phone home-screen icon, etc.
+ * Files live in /assets/img/. The ?v= value changes when a file is replaced,
+ * so browsers pick up a new icon instead of showing a cached old one.
+ */
+function favicon_tags(): string
+{
+    $dir = __DIR__ . '/../assets/img/';
+    $v = function (string $f) use ($dir): string {
+        return is_file($dir . $f) ? '?v=' . filemtime($dir . $f) : '';
+    };
+    return '<link rel="icon" href="/favicon.ico' . $v('favicon.ico') . '" sizes="any">' . "\n"
+        . '<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png' . $v('favicon-32.png') . '">' . "\n"
+        . '<link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon-16.png' . $v('favicon-16.png') . '">' . "\n"
+        . '<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png' . $v('apple-touch-icon.png') . '">' . "\n";
+}
