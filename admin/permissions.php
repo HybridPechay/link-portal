@@ -77,33 +77,42 @@ if ($selectedUserId > 0) {
     }
 }
 
-function render_permission_tree(array $nodes): string
+/**
+ * Renders the <li> items for a list of folder nodes. Each folder becomes one
+ * <li> whose nested <ul> holds its links first and then its sub-folders, in
+ * exactly the same order the portal itself shows them. Every tag opened here
+ * is closed here, so the browser builds the same hierarchy as the database.
+ */
+function render_permission_items(array $nodes): string
 {
-    $html = '<ul>';
+    $html = '';
     foreach ($nodes as $node) {
         $fid = (int) $node['id'];
         $checked = !empty($node['granted']) ? ' checked' : '';
-        $html .= '<li>';
-        $html .= '<label><input type="checkbox" class="folder-check" name="perm[]" value="folder:' . $fid . '"' . $checked . '> ' . e($node['name']) . '</label>';
 
-        $hasContent = !empty($node['children']) || !empty($node['links']);
-        if ($hasContent) {
+        $html .= '<li class="perm-folder">';
+        $html .= '<label class="folder-label"><input type="checkbox" class="folder-check" name="perm[]" value="folder:' . $fid . '"' . $checked . '> ' . e($node['name']) . '</label>';
+
+        $links = $node['links'] ?? [];
+        $children = $node['children'] ?? [];
+        if (!empty($links) || !empty($children)) {
             $html .= '<ul>';
-            foreach ($node['links'] as $link) {
+            foreach ($links as $link) {
                 $lid = (int) $link['id'];
                 $lchecked = !empty($link['granted']) ? ' checked' : '';
-                $html .= '<li><label class="link-label"><input type="checkbox" class="link-check" name="perm[]" value="link:' . $lid . '"' . $lchecked . '> ' . e($link['title']) . '</label></li>';
+                $html .= '<li class="perm-link"><label class="link-label"><input type="checkbox" class="link-check" name="perm[]" value="link:' . $lid . '"' . $lchecked . '> ' . e($link['title']) . '</label></li>';
             }
-            $html .= '</ul>';
-            if (!empty($node['children'])) {
-                $html .= render_permission_tree($node['children']);
-            }
+            $html .= render_permission_items($children);
             $html .= '</ul>';
         }
         $html .= '</li>';
     }
-    $html .= '</ul>';
     return $html;
+}
+
+function render_permission_tree(array $nodes): string
+{
+    return '<ul>' . render_permission_items($nodes) . '</ul>';
 }
 ?>
 <!DOCTYPE html>

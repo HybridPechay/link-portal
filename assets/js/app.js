@@ -45,27 +45,40 @@
     if (!trees.length) return;
 
     trees.forEach((tree) => {
-        const folderChecks = tree.querySelectorAll('input.folder-check');
-        folderChecks.forEach((cb) => {
-            cb.addEventListener('change', function () {
-                const li = this.closest('li');
-                if (!li) return;
-                const descendants = li.querySelectorAll('input[type="checkbox"]');
-                descendants.forEach((d) => {
-                    if (d === this) return;
-                    if (this.checked) {
-                        d.checked = true;
-                        d.disabled = true;
-                    } else {
-                        d.disabled = false;
-                    }
-                });
-            });
-            // Reflect initial state (e.g. re-rendering after a save).
-            if (cb.checked) {
-                cb.dispatchEvent(new Event('change'));
+        const boxes = Array.from(tree.querySelectorAll('input[type="checkbox"]'));
+
+        // Remember what was explicitly granted (data-own), separately from
+        // what is only *implied* by a checked parent folder.
+        boxes.forEach((cb) => { cb.dataset.own = cb.checked ? '1' : '0'; });
+
+        // Is any ancestor folder of this checkbox explicitly checked?
+        function impliedByAncestor(cb) {
+            let li = cb.closest('li');
+            let parent = li && li.parentElement ? li.parentElement.closest('li') : null;
+            while (parent) {
+                const pc = parent.querySelector(':scope > label > input.folder-check');
+                if (pc && pc.dataset.own === '1') return true;
+                parent = parent.parentElement ? parent.parentElement.closest('li') : null;
             }
+            return false;
+        }
+
+        function refresh() {
+            boxes.forEach((cb) => {
+                const implied = impliedByAncestor(cb);
+                cb.disabled = implied;               // locked while a parent covers it
+                cb.checked = implied || cb.dataset.own === '1';
+            });
+        }
+
+        boxes.forEach((cb) => {
+            cb.addEventListener('change', function () {
+                if (!this.disabled) this.dataset.own = this.checked ? '1' : '0';
+                refresh();
+            });
         });
+
+        refresh();
     });
 })();
 
